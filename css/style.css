@@ -1,0 +1,121 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  font-family: "Montserrat", sans-serif;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  /* min-width: 100vh; */
+}
+
+main {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+}
+
+#background-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* background-image: url("https://minimalistic-wallpaper.demolab.com/?random"); */
+  background-image: url("https://img.freepik.com/free-photo/mount-mont-blanc-covered-snow-reflecting-water-evening-chamonix-france_181624-33408.jpg?t=st=1742567470~exp=1742571070~hmac=8a2d70f44e1e91c13cae6a5d7bcf2e05c4a3937ad0bbfc2355999bc14bc3509d&w=1380");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 100%;
+  z-index: -1;
+}
+
+.date-time-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  position: absolute;
+  top: 20px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.092);
+  backdrop-filter: blur(3px) grayscale(50%);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.411);
+  min-width: 300px;
+  width: 350px;
+  height: 40px;
+}
+
+#time-span {
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+
+#date-span {
+  color: white;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+#edit-title {
+  margin-bottom: 40px;
+  font-size: 42px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.407);
+  text-decoration: none;
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 300px;
+  width: 95%;
+  height: 400px;
+  gap: 30px;
+}
+
+@media (min-width: 1010px) and (max-width: 1358px) {
+  .dashboard-container {
+    max-width: 950px;
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+  height: inherit;
+  border-radius: 8%;
+  background-color: rgba(255, 255, 255, 0.092);
+  backdrop-filter: blur(3px) grayscale(0%) brightness(80%);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.411);
+  transition: 0.1s ease-in;
+}
+
+.card h2 {
+  position: absolute;
+  top: 40px;
+  color: white;
+  font-weight: 400;
+  letter-spacing: 1px;
+  font-size: 28px;
+}
+
+.card:hover {
+  background-color: rgba(255, 255, 255, 0.152);
+}
