@@ -8,6 +8,13 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script src="./scripts/script.js" defer></script>
     <title>F25D-The Dashboard</title>
   </head>
@@ -22,17 +29,31 @@
         >F25D-The Dashboard</cite
       >
       <div class="dashboard-container">
-        <div class="card">
+        <div id="quick-links-card" class="card">
           <h2>Quick Links</h2>
+          <div id="links-container" class="card-content">
+            <div class="link-div">
+              <img id="favicon" src="" alt="" />
+              <p id="quick-link-span">TestTest</p>
+              <i id="delete-link-button" class="fa-regular fa-circle-xmark"></i>
+            </div>
+          </div>
+          <button id="add-link-button">
+            <i id="add-link-icon" class="fa-solid fa-plus"></i>Add link
+          </button>
+          <input type="url" id="link-input" />
         </div>
         <div class="card">
           <h2>Weather</h2>
+          <div class="card-content"></div>
         </div>
         <div class="card">
           <h2>News</h2>
+          <div class="card-content"></div>
         </div>
         <div class="card">
           <h2>Notes</h2>
+          <div class="card-content"></div>
         </div>
       </div>
     </main>
