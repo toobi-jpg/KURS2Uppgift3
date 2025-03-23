@@ -10,7 +10,7 @@ html {
 body {
   width: 100vw;
   height: 100vh;
-  /* min-width: 100vh; */
+  min-height: 100vh;
 }
 
 main {
@@ -29,7 +29,7 @@ main {
   left: 0;
   top: 0;
   /* background-image: url("https://minimalistic-wallpaper.demolab.com/?random"); */
-  background-image: url("../images/wallpapersden.com_tree-alone-dark-evening-4k_3840x2160.jpg");
+  background-image: url("../images/macos-big-sur-stock-night-lone-tree-sedimentary-rocks-3840x2160-3776.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
@@ -49,8 +49,9 @@ main {
   backdrop-filter: blur(3px) grayscale(50%);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.411);
   min-width: 300px;
-  width: 350px;
+  max-width: 350px;
   height: 40px;
+  flex-shrink: 1;
 }
 
 #time-span {
@@ -64,6 +65,18 @@ main {
   color: white;
   font-size: 16px;
   font-weight: 300;
+}
+
+.title-container {
+  position: relative;
+  height: auto;
+  width: auto;
+}
+
+#save-title-btn {
+  position: absolute;
+  right: -130px;
+  top: 15px;
 }
 
 #edit-title {
@@ -99,6 +112,7 @@ main {
   justify-content: center;
   align-items: center;
   min-width: 300px;
+  width: 300px;
   height: inherit;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.309);
@@ -119,15 +133,22 @@ main {
   background-color: rgba(255, 255, 255, 0.291);
 }
 
+#links-container {
+  max-height: 250px;
+  margin-bottom: 20px;
+}
+
 .card-content {
+  position: relative;
   margin-top: 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   height: 100%;
-  width: 85%;
+  width: 100%;
   gap: 10px;
+  padding: 0px 20px;
 }
 
 .link-div {
@@ -136,36 +157,68 @@ main {
   display: flex;
   align-items: center;
   width: 100%;
+  max-height: 55px;
   height: 55px;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.608);
-  cursor: pointer;
+  transition: 0.1s ease-in;
 }
 
 .link-div:hover {
   background-color: rgba(230, 230, 230, 0.608);
+  transform: scale(102%);
 }
 
 #favicon {
-  width: 25px;
-  height: auto;
+  min-width: none;
+  min-height: none;
+  width: auto;
+  flex-shrink: 0;
+  height: calc(100% - 5px);
+  max-width: 35px;
+  max-height: 35px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 #quick-link-span {
-  margin-left: 8px;
+  margin-left: 10px;
   font-weight: 600;
   color: black;
-  user-select: none;
+  user-select: none !important;
+  font-size: 15px;
+  z-index: 99999;
+  opacity: 60%;
+}
+
+#quick-link-span:hover {
+  color: rgba(0, 0, 255, 0.511);
+}
+
+.link-href {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 90%;
+  height: 100%;
+  border-radius: 8px;
+  z-index: 999;
 }
 
 #delete-link-button {
+  display: none !important;
+  opacity: 0 !important;
   position: absolute;
   top: 5px;
   right: 5px;
   opacity: 30%;
   cursor: pointer;
+  z-index: 999;
+}
+
+#delete-link-button {
+  display: flex;
+  opacity: 1 !important;
 }
 
 #delete-link-button:hover {
@@ -174,12 +227,17 @@ main {
   opacity: 80%;
 }
 
-#add-link-button {
+.link-div:hover #delete-link-button {
+  display: flex !important;
+  opacity: 30% !important;
+}
+
+button {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 35px;
+  min-height: 27px;
   width: 120px;
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.318);
@@ -190,44 +248,70 @@ main {
   cursor: pointer;
 }
 
-#add-link-button:hover {
+button:hover {
   background-color: rgba(255, 255, 255, 0.412);
 }
 
 #add-link-icon {
   color: rgba(255, 255, 255, 0.617);
+  margin-top: 2px;
 }
 
 #add-link-div {
-  position: absolute;
-  bottom: 60px;
+  position: relative;
   height: auto;
   width: auto;
   display: none;
   opacity: 0;
 }
 
+.show-input {
+  opacity: 1 !important;
+  display: flex !important;
+}
+
+.delayed-width-input {
+  width: 260px !important;
+}
+
 #link-input {
-  width: 350px;
-  height: 40px;
+  width: 60px;
+  height: 27px;
   border-radius: 8px;
   border: none;
   outline: none;
   background-color: rgba(196, 196, 196, 0.89);
-  box-shadow: 0px 2px 4px black;
   color: white;
   padding-left: 20px;
   transition: 0.1s ease-in;
   font-size: 14px;
 }
 
+#link-input::placeholder {
+  color: red;
+  opacity: 70%;
+}
+
 #add-link-icon-input {
   position: absolute;
   color: white;
-  right: 15px;
-  bottom: 20px;
+  right: 10px;
+  bottom: 13px;
   justify-self: center;
+  opacity: 60%;
   cursor: pointer;
+}
+
+#add-link-icon-input:hover {
+  opacity: 100%;
+  transform: scale(110%);
+}
+
+#max-links-text {
+  position: absolute;
+  bottom: 55px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .show-input {
@@ -237,4 +321,55 @@ main {
 
 .hide-input {
   opacity: 0 !important;
+}
+
+.notes-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.608);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 0;
+}
+
+#notes-text {
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
+  width: 100%;
+  color: black;
+  font-weight: 550;
+  margin: 0;
+  outline: none;
+  word-break: break-all;
+}
+
+#notes-controls {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  gap: 20px;
+}
+
+#notes-controls img {
+  height: calc(100% - 10px);
+  width: auto;
+  opacity: 40%;
+  cursor: pointer;
+}
+
+#notes-controls img:hover {
+  opacity: 80%;
+}
+
+.active-align {
+  border: 2px solid rgba(0, 0, 0, 0.448);
+  border-radius: 4px;
+  opacity: 80% !important;
 }
