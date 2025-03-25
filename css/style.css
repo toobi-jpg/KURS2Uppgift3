@@ -161,7 +161,8 @@ main {
   height: 55px;
   border-radius: 8px;
   background-color: rgba(255, 255, 255, 0.608);
-  transition: 0.1s ease-in;
+  transition: 0.15s ease-in;
+  overflow: hidden;
 }
 
 .link-div:hover {
@@ -188,7 +189,7 @@ main {
   user-select: none !important;
   font-size: 15px;
   z-index: 99999;
-  opacity: 60%;
+  opacity: 70%;
 }
 
 #quick-link-span:hover {

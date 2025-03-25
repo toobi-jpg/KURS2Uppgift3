@@ -1,4 +1,4 @@
-// Tid & datum logik ........................................................
+// Tid & datum logik Utan api fetch ........................................
 const timeText = document.querySelector("#time-span");
 const dateText = document.querySelector("#date-span");
 
@@ -190,9 +190,9 @@ function addLinkObject(url, name, icon) {
 // ..........................................................................
 //Lägga till element logik ..................................................
 function createLinkDiv(links) {
-  //Det här med objekt array's är det svåraste jag gjort hittills, tog ett par dagar att få ihop. får ont i huvudet .....
   linksContainer.innerHTML = "";
-  //Gamla hederliga for i loop, säkert snyggare med någon forEach eller liknande men måste öva mer på dem. for i är just nu lättare för mig att förstå mig på.
+  //Detta block har varit det svåraste inom kodning än sålänge för mig. Men också det roligaste!
+  //Gamla hederliga for i loop, säkert snyggare med någon forEach men började detta block ett tag innan jag vart säkrare på forEach.
   for (let i = 0; i < Object.keys(links).length; i++) {
     const key = Object.keys(links)[i];
     const linkObject = links[key];
@@ -244,13 +244,17 @@ function createLinkDiv(links) {
     deleteBtn.className = "fa-regular fa-circle-xmark";
     deleteBtn.addEventListener("click", () => {
       console.log("Delete button clicked");
-      delete links[key];
-      localStorage.setItem("links", JSON.stringify(links));
-      createLinkDiv(links);
-      console.log(Object.keys(links).length + " Sparade länkar");
+      linkDiv.style.width = "20px";
+      linkDiv.style.opacity = "0";
+      setTimeout(() => {
+        delete links[key];
+        localStorage.setItem("links", JSON.stringify(links));
+        createLinkDiv(links);
+        console.log(Object.keys(links).length + " Sparade länkar");
+      }, 150);
     });
 
-    //Responsiv länk höjd, det funkade till viss del med css endast men höjden vart inte den samma på alla divar hela tiden.
+    //Responsiv länk höjd, det funkade till viss del med css endast men höjden vart inte den samma på alla divar hela tiden. AV vilket skäl är jag osäker på men misstänker pga olika storlekar på iconen eller något.
     if (Object.keys(links).length > 5) {
       linkDiv.style.maxHeight = "32px";
     }
@@ -285,6 +289,7 @@ console.log(Object.keys(links).length + " Sparade länkar");
 
 // ..........................................................................
 // Notes logik ..............................................................
+//Känns som en onödigt lång kod för en sådan liten funktion, kom gärna med feedback om man kan göra snyggare här.
 const notesText = document.querySelector("#notes-text");
 const notesCardContent = document.querySelector("#card-content-notes");
 const notesControls = document.querySelector("#notes-controls");
