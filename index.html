@@ -38,19 +38,75 @@
             <i id="add-link-icon" class="fa-solid fa-plus"></i>Add link
           </button>
           <div id="add-link-div">
-            <input type="url" id="link-input" />
+            <input type="url" id="link-input" class="input-style" />
             <i id="add-link-icon-input" class="fa-solid fa-plus fa-lg"></i>
           </div>
         </div>
-        <div class="card">
+
+        <div id="weather-card" class="card">
           <h2>Weather</h2>
-          <div class="card-content"></div>
+          <div id="weather-container" class="card-content">
+            <div id="today-weather-div" class="weather-div">
+              <i id="today-img" class="fa-solid fa-cloud fa-xl"></i>
+              <div class="weather-content">
+                <p class="day-title">Today</p>
+                <div class="weather-line-div">
+                  <div id="today-celcius" class="weather-small-container">
+                    <p id="today-celcius-span">4Cel</p>
+                  </div>
+                  <div
+                    id="today-forecast"
+                    class="weather-small-container forecast"
+                  >
+                    <p id="today-forecast-span">Måln</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tomorrow-weather-div" class="weather-div">
+              <i id="tomorrow-img" class="fa-solid fa-sun fa-xl"></i>
+              <div class="weather-content">
+                <p id="tomorrow-title" class="day-title">Tomorrow</p>
+                <div class="weather-line-div">
+                  <div id="tomorrow-celcius" class="weather-small-container">
+                    <p id="tomorrow-celcius-span">Test2</p>
+                  </div>
+                  <div
+                    id="tomorrow-forecast"
+                    class="weather-small-container forecast"
+                  >
+                    <p id="tomorrow-forecast-span">Sol</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="third-weather-div" class="weather-div">
+              <i id="third-img" class="fa-solid fa-cloud-bolt fa-xl"></i>
+              <div class="weather-content">
+                <p id="third-title" class="day-title">Monday</p>
+                <div class="weather-line-div">
+                  <div id="third-celcius" class="weather-small-container">
+                    <p id="third-celcius-span">Test3</p>
+                  </div>
+                  <div
+                    id="third-forecast"
+                    class="weather-small-container forecast"
+                  >
+                    <p id="third-forecast-span">Blixt</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input type="text" id="location-input" class="input-style" />
         </div>
-        <div class="card">
+
+        <div id="" class="card">
           <h2>News</h2>
           <div class="card-content"></div>
         </div>
-        <div class="card">
+
+        <div id="notes-card" class="card">
           <h2>Notes</h2>
           <div id="card-content-notes" class="card-content">
             <div class="notes-container">

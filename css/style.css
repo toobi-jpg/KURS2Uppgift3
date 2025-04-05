@@ -34,6 +34,7 @@ main {
   background-repeat: no-repeat;
   width: 100%;
   min-height: 100%;
+  height: 100%;
   z-index: -1;
 }
 
@@ -102,6 +103,17 @@ main {
 @media (min-width: 1010px) and (max-width: 1358px) {
   .dashboard-container {
     max-width: 950px;
+  }
+}
+@media (max-width: 470px) {
+  #edit-title {
+    font-size: 38px;
+  }
+}
+
+@media (max-width: 415px) {
+  #edit-title {
+    font-size: 28px;
   }
 }
 
@@ -275,13 +287,13 @@ button:hover {
   width: 260px !important;
 }
 
-#link-input {
-  width: 60px;
+.input-style {
+  width: 120px;
   height: 27px;
   border-radius: 8px;
   border: none;
   outline: none;
-  background-color: rgba(196, 196, 196, 0.89);
+  background-color: rgba(196, 196, 196, 0.694);
   color: white;
   padding-left: 20px;
   transition: 0.1s ease-in;
@@ -373,4 +385,77 @@ button:hover {
   border: 2px solid rgba(0, 0, 0, 0.448);
   border-radius: 4px;
   opacity: 80% !important;
+}
+
+.weather-div {
+  position: relative;
+  padding-left: 13px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-height: 55px;
+  height: 55px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.608);
+  transition: 0.15s ease-in;
+  overflow: hidden;
+}
+
+.weather-div i {
+  opacity: 70%;
+  max-width: 25px;
+}
+
+.weather-content {
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid red; */
+  width: 100%;
+  height: 70%;
+  margin-left: 15px;
+  gap: 3px;
+}
+
+.weather-line-div {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.day-title {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.weather-small-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  max-width: 50px;
+  width: auto;
+  background-color: rgba(255, 255, 255, 0.33);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+
+.forecast {
+  max-width: 120px;
+}
+
+.weather-small-container p {
+  font-weight: 600;
+  font-size: 10px;
+  text-align: center;
+}
+
+#location-input {
+  width: 240px;
+  margin-bottom: 5px;
+}
+
+#location-input::placeholder {
+  color: white;
+  margin-right: 20px;
+  text-align: center;
 }

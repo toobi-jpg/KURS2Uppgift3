@@ -29,6 +29,23 @@ const month = [
   "December",
 ];
 
+const day = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+let dayIndex = date.getDay();
+let dayofWeek = day[dayIndex];
+let dayTomorrowIndex = (dayIndex + 1) % 7;
+let dayTomorrow = day[dayTomorrowIndex];
+let dayAfterTomorrowIndex = (dayIndex + 2) % 7;
+let dayAfterTomorrow = day[dayAfterTomorrowIndex];
+
 let year = date.getFullYear();
 let fullDate =
   date.getUTCDate() + " " + month[date.getMonth() - 1] + " " + year;
@@ -383,3 +400,116 @@ notesText.addEventListener("input", () => {
   }
 });
 // ..........................................................................
+// Position logik ...........................................................
+const locationInput = document.querySelector("#location-input");
+let savedwLocation = localStorage.getItem("wLocation");
+
+if (savedwLocation) {
+  getLocation(savedwLocation);
+  locationInput.placeholder = savedwLocation;
+} else {
+  getLocation();
+  locationInput.placeholder = "Stockholm";
+}
+
+locationInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    console.log(locationInput.value);
+    localStorage.setItem("wLocation", locationInput.value);
+    getLocation(locationInput.value.toString());
+  }
+});
+
+async function getLocation(location = "Stockholm") {
+  const url = `https://nominatim.openstreetmap.org/search.php?q=${location}&format=jsonv2`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Response not ok!:", response.status);
+    }
+    const locationData = await response.json();
+    // console.log("Latitude:", locationData[0].lat.slice(0, -5));
+    // console.log("Longitude:", locationData[0].lon.slice(0, -5));
+    let lat = locationData[0].lat.slice(0, -5);
+    let lon = locationData[0].lon.slice(0, -5);
+
+    getWeather(lat, lon);
+
+    ("https://api.open-meteo.com/v1/forecast?latitude=59.33&longitude=18.06&daily=temperature_2m_max,weather_code&forecast_days=3");
+  } catch (error) {
+    let notFound = "Location not found";
+    console.error(notFound);
+  }
+}
+
+// Väder logik ..............................................................
+const todayImage = document.querySelector("#today-img");
+const todayCelcius = document.querySelector("#today-celcius-span");
+const todayForecast = document.querySelector("#today-forecast-span");
+
+const tomorrowImage = document.querySelector("#tomorrow-img");
+const tomorrowCelcius = document.querySelector("#tomorrow-celcius-span");
+const tomorrowForecast = document.querySelector("#tomorrow-forecast-span");
+document.querySelector("#tomorrow-title").textContent = dayTomorrow;
+
+const thirdImage = document.querySelector("#third-img");
+const thirdCelcius = document.querySelector("#third-celcius-span");
+const thirdForecast = document.querySelector("#third-forecast-span");
+document.querySelector("#third-title").textContent = dayAfterTomorrow;
+
+let clear = "fa-solid fa-sun fa-xl";
+let cloud = "fa-solid fa-cloud fa-xl";
+let fog = "fa-solid fa-smog fa-xl";
+let rain = "fa-solid fa-umbrella fa-xl";
+let snow = "fa-solid fa-snowflake fa-xl";
+let thunder = "fa-solid fa-cloud-bolt fa-xl";
+
+async function getWeather(lat = "59.32", lon = "18.07") {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,weather_code&forecast_days=3`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Response not ok!: ", response.status);
+    }
+    const weatherData = await response.json();
+    placeWeather(weatherData);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+function placeWeather(data) {
+  let celcius = data.daily.temperature_2m_max;
+  let forecast = data.daily.weather_code;
+
+  const images = [todayImage, tomorrowImage, thirdImage];
+  const forecasts = [todayForecast, tomorrowForecast, thirdForecast];
+
+  for (let i = 0; i < forecast.length; i++) {
+    const wCode = forecast[i];
+
+    if (wCode >= 0 && wCode < 3) {
+      images[i].className = clear;
+      forecasts[i].textContent = "Clear";
+    } else if (wCode >= 3 && wCode < 45) {
+      images[i].className = cloud;
+      forecasts[i].textContent = "Cloudy";
+    } else if (wCode >= 45 && wCode < 61) {
+      images[i].className = fog;
+      forecasts[i].textContent = "Fog";
+    } else if ((wCode >= 61 && wCode < 71) || (wCode >= 80 && wCode <= 82)) {
+      images[i].className = rain;
+      forecasts[i].textContent = "Rain";
+    } else if (wCode >= 71 && wCode < 95) {
+      images[i].className = snow;
+      forecasts[i].textContent = "Snow";
+    } else if (wCode >= 95) {
+      images[i].className = thunder;
+      forecasts[i].textContent = "Thunder";
+    }
+  }
+
+  todayCelcius.textContent = `${Math.ceil(celcius[0])}°C`;
+  tomorrowCelcius.textContent = `${Math.ceil(celcius[1])}°C`;
+  thirdCelcius.textContent = `${Math.ceil(celcius[2])}°C`;
+}
