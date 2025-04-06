@@ -200,7 +200,6 @@ function addLinkObject(url, name, icon) {
 
   localStorage.setItem("links", JSON.stringify(links));
 
-  console.log(Object.keys(links).length + " Sparade länkar");
   createLinkDiv(links);
 }
 
@@ -260,14 +259,12 @@ function createLinkDiv(links) {
     deleteBtn.id = "delete-link-button";
     deleteBtn.className = "fa-regular fa-circle-xmark";
     deleteBtn.addEventListener("click", () => {
-      console.log("Delete button clicked");
       linkDiv.style.width = "20px";
       linkDiv.style.opacity = "0";
       setTimeout(() => {
         delete links[key];
         localStorage.setItem("links", JSON.stringify(links));
         createLinkDiv(links);
-        console.log(Object.keys(links).length + " Sparade länkar");
       }, 150);
     });
 
@@ -302,7 +299,6 @@ function createLinkDiv(links) {
 }
 
 createLinkDiv(links);
-console.log(Object.keys(links).length + " Sparade länkar");
 
 // ..........................................................................
 // Notes logik ..............................................................
@@ -328,7 +324,7 @@ if (savedAlign === "right") {
 
 const savedNotes = localStorage.getItem("notes");
 
-let emptyNotesText = "Write notes!";
+let emptyNotesText = "";
 
 if (savedAlign) {
   notesText.style.textAlign = savedAlign;
@@ -365,6 +361,7 @@ leftAlignBtn.addEventListener("click", () => {
   leftAlignBtn.classList.add("active-align");
   centerAlignBtn.classList.remove("active-align");
   rightAlignBtn.classList.remove("active-align");
+  notesText.focus();
 
   notesText.style.textAlign = "left";
   localStorage.setItem("align", notesText.style.textAlign);
@@ -374,6 +371,7 @@ centerAlignBtn.addEventListener("click", () => {
   leftAlignBtn.classList.remove("active-align");
   centerAlignBtn.classList.add("active-align");
   rightAlignBtn.classList.remove("active-align");
+  notesText.focus();
 
   notesText.style.textAlign = "center";
   localStorage.setItem("align", notesText.style.textAlign);
@@ -383,6 +381,7 @@ rightAlignBtn.addEventListener("click", () => {
   leftAlignBtn.classList.remove("active-align");
   centerAlignBtn.classList.remove("active-align");
   rightAlignBtn.classList.add("active-align");
+  notesText.focus();
 
   notesText.style.textAlign = "right";
   localStorage.setItem("align", notesText.style.textAlign);
@@ -402,21 +401,52 @@ notesText.addEventListener("input", () => {
 // ..........................................................................
 // Position logik ...........................................................
 const locationInput = document.querySelector("#location-input");
+const locationSpan = document.querySelector("#current-location-span");
+const pin = document.querySelector("#pin");
 let savedwLocation = localStorage.getItem("wLocation");
+
+function showLocationInput() {
+  pin.classList.add("hide-pin");
+  locationInput.classList.add("show-input");
+  locationInput.focus();
+  setTimeout(() => {
+    locationInput.style.width = "240px";
+  }, 50);
+}
+
+function hideLocationInput() {
+  locationInput.style.width = "30px";
+  setTimeout(() => {
+    pin.classList.remove("hide-pin");
+    locationInput.classList.remove("show-input");
+    locationInput.blur();
+  }, 50);
+}
+
+pin.addEventListener("click", () => {
+  showLocationInput();
+});
+
+locationInput.addEventListener("blur", () => {
+  hideLocationInput();
+});
 
 if (savedwLocation) {
   getLocation(savedwLocation);
-  locationInput.placeholder = savedwLocation;
+  locationSpan.textContent = savedwLocation;
 } else {
   getLocation();
-  locationInput.placeholder = "Stockholm";
+  locationSpan.textContent = "Stockholm";
 }
 
 locationInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    console.log(locationInput.value);
     localStorage.setItem("wLocation", locationInput.value);
     getLocation(locationInput.value.toString());
+    locationSpan.textContent = localStorage.getItem("wLocation");
+    locationInput.value = "";
+    locationInput.blur();
+    searches.forEach((item) => item.remove());
   }
 });
 
@@ -513,3 +543,96 @@ function placeWeather(data) {
   tomorrowCelcius.textContent = `${Math.ceil(celcius[1])}°C`;
   thirdCelcius.textContent = `${Math.ceil(celcius[2])}°C`;
 }
+// ..........................................................................
+// Autocomplete & Huvudstäder api data loggik ...............................
+const searchContainer = document.querySelector("#search-filter-container");
+
+let searches = [];
+
+locationInput.addEventListener("keypress", (event) => {
+  if (searches.length > 0) {
+    searches.forEach((item) => item.remove());
+    searches = [];
+  }
+
+  let searchLocation = locationInput.value + event.key;
+  let count = 0;
+
+  capitalAllData.data.forEach((item) => {
+    if (count >= 3) return;
+
+    if (item.capital.includes(searchLocation)) {
+      count++;
+
+      let itemDiv = document.createElement("div");
+      itemDiv.id = "search-item";
+      itemDiv.tabIndex = "0";
+      let itemText = document.createElement("p");
+      itemText.id = "item-capital-name";
+      itemText.textContent = item.capital;
+      let itemSpan = document.createElement("span");
+      itemSpan.id = "item-country-span";
+      itemSpan.textContent = item.name;
+      itemText.appendChild(itemSpan);
+      itemDiv.appendChild(itemText);
+      searchContainer.appendChild(itemDiv);
+
+      searches.push(itemDiv);
+
+      itemDiv.addEventListener("click", () => {
+        getLocation(item.capital);
+        searches.forEach((item) => item.remove());
+        localStorage.setItem("wLocation", item.capital);
+        hideLocationInput();
+        locationInput.value = "";
+        locationSpan.textContent = item.capital;
+      });
+      itemDiv.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          getLocation(item.capital);
+          searches.forEach((item) => item.remove());
+          localStorage.setItem("wLocation", item.capital);
+          hideLocationInput();
+          locationInput.value = "";
+          locationSpan.textContent = item.capital;
+        }
+      });
+    }
+    if (event.key === "Tab") {
+      event.preventDefault();
+      itemDiv.focus();
+    }
+  });
+});
+
+locationInput.addEventListener("input", () => {
+  if (!locationInput.value) {
+    searches.forEach((item) => item.remove());
+  }
+});
+
+locationInput.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    searches.forEach((item) => item.remove());
+    hideLocationInput();
+    locationInput.value = "";
+  }
+});
+
+async function getCapitals() {
+  const capitalsURL = "https://countriesnow.space/api/v0.1/countries/capital";
+  try {
+    const response = await fetch(capitalsURL);
+    if (!response.ok) {
+      throw new Error("Response not ok!", response.status);
+    }
+    capitalAllData = await response.json();
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+getCapitals();
+// ..........................................................................
+// Bakgrundsbild logik ......................................................
+const bg = document.querySelector("#background-image");
+const bgBtn = document.querySelector("#bgButton");

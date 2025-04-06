@@ -28,7 +28,6 @@ main {
   position: absolute;
   left: 0;
   top: 0;
-  /* background-image: url("https://minimalistic-wallpaper.demolab.com/?random"); */
   background-image: url("../images/macos-big-sur-stock-night-lone-tree-sedimentary-rocks-3840x2160-3776.jpg");
   background-size: cover;
   background-repeat: no-repeat;
@@ -121,9 +120,9 @@ main {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-width: 300px;
+  min-width: 200px;
   width: 300px;
   height: inherit;
   border-radius: 12px;
@@ -145,11 +144,6 @@ main {
   background-color: rgba(255, 255, 255, 0.291);
 }
 
-#links-container {
-  max-height: 250px;
-  margin-bottom: 20px;
-}
-
 .card-content {
   position: relative;
   margin-top: 20px;
@@ -157,10 +151,18 @@ main {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  height: 100%;
+  max-height: 70%;
+  /* border: 1px solid red; */
+  height: 70%;
   width: 100%;
   gap: 10px;
   padding: 0px 20px;
+  margin-bottom: 20px;
+}
+
+#card-content-notes {
+  max-height: 100%;
+  height: 100%;
 }
 
 .link-div {
@@ -450,12 +452,88 @@ button:hover {
 }
 
 #location-input {
-  width: 240px;
+  width: 20px;
   margin-bottom: 5px;
+  display: none;
+  opacity: 0;
 }
 
 #location-input::placeholder {
   color: white;
   margin-right: 20px;
   text-align: center;
+}
+
+#search-filter-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  justify-self: center;
+  bottom: -70px;
+  width: 240px;
+  height: 90px;
+  max-height: 90px;
+  min-height: 27px;
+  z-index: 1;
+  gap: 3px;
+}
+
+#search-item {
+  width: 100%;
+  height: 27px;
+  background-color: rgba(0, 0, 0, 0.456);
+  border-radius: 8px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+}
+
+#search-item:focus {
+  border: 1px solid white;
+}
+
+#search-item:hover {
+  background-color: rgba(22, 22, 22, 0.348);
+}
+
+#item-capital-name {
+  display: flex;
+  font-size: 12px;
+  gap: 5px;
+}
+
+#item-country-span {
+  font-size: 12px;
+  opacity: 60%;
+}
+
+#current-location-span {
+  position: absolute;
+  font-weight: 500;
+  color: white;
+  bottom: 55px;
+}
+
+#pin {
+  position: absolute;
+  color: white;
+  bottom: 36px;
+  cursor: pointer;
+  opacity: 60%;
+  transition: 0.1s ease-in;
+}
+
+#pin:hover {
+  transform: translateY(-2px);
+  opacity: 80%;
+}
+
+.hide-pin {
+  display: none !important;
+  opacity: 0 !important;
 }
