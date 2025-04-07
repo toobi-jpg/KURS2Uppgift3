@@ -635,4 +635,59 @@ getCapitals();
 // ..........................................................................
 // Bakgrundsbild logik ......................................................
 const bg = document.querySelector("#background-image");
-const bgBtn = document.querySelector("#bgButton");
+const bgKeyBtn = document.querySelector("#random-background-btn");
+const bgBtn = document.querySelector("#random-background-fetch-btn");
+const apiKeyInput = document.querySelector("#apiKey");
+const savedKey = localStorage.getItem("key");
+
+const savedImage = localStorage.getItem("imageUrl");
+
+if (savedKey) {
+  bgKeyBtn.style.display = "none";
+  bgBtn.style.display = "flex";
+} else {
+  bgKeyBtn.style.display = "flex";
+  bgBtn.style.display = "none";
+}
+
+if (savedImage) {
+  bg.style.backgroundImage = `url(${savedImage})`;
+} else {
+  bg.style.backgroundImage = "";
+}
+
+apiKeyInput.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    localStorage.setItem("key", apiKeyInput.value);
+    apiKeyInput.value = "";
+    console.log(localStorage.getItem("key"));
+  }
+});
+
+bgBtn.addEventListener("click", () => {
+  getImage(savedKey);
+});
+
+async function getImage(key) {
+  const accessKey = key;
+  const topicNature = "6sMVjTLSkeQ";
+  const topicWallpaper = "9dKjUlgjt5A";
+  const topicTextures = "8L2xg3CqN9w";
+  const topicSports = "7OQHeV3qjXk";
+  const unsplashURL = `https://api.unsplash.com/photos/random?topics=${topicNature}&client_id=${accessKey}`;
+  try {
+    const response = await fetch(unsplashURL);
+    if (!response.ok) {
+      throw new Error("Unsplash response not ok!", response.status);
+    }
+    unsplashData = await response.json();
+    imageUrl = unsplashData.urls.full.toString();
+    imageTopic = unsplashData.topics[0].title.toString();
+    // console.log(imageUrl);
+    // console.log(imageTopic);
+    localStorage.setItem("imageUrl", imageUrl);
+    bg.style.backgroundImage = `url(${imageUrl})`;
+  } catch (error) {
+    console.error(error.message);
+  }
+}

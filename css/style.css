@@ -446,7 +446,7 @@ button:hover {
 }
 
 .weather-small-container p {
-  font-weight: 600;
+  font-weight: bold;
   font-size: 10px;
   text-align: center;
 }
@@ -536,4 +536,88 @@ button:hover {
 .hide-pin {
   display: none !important;
   opacity: 0 !important;
+}
+
+.bg-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  background-color: rgba(0, 0, 0, 0.331);
+  top: 20px;
+  right: 20px;
+  border-radius: 10px;
+  color: white;
+  padding: 0px 12px;
+  gap: 8px;
+  overflow: hidden;
+  transition: width 0.1s ease-in;
+  padding: 0;
+  margin: 0;
+}
+
+.bg-btn p {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 70%;
+  opacity: 0;
+  display: none;
+  height: 1rem;
+  white-space: nowrap;
+}
+
+.bg-btn i {
+  opacity: 70%;
+  transition: transform 0.2s ease-in;
+}
+
+.bg-btn:hover {
+  background-color: rgba(0, 0, 0, 0.331);
+  width: 210px;
+}
+
+.bg-btn:hover i {
+  transform: rotate(360deg);
+}
+
+.bg-btn:hover p {
+  opacity: 1;
+  display: flex;
+}
+
+.bg-btn:hover input {
+  display: flex;
+}
+
+#newBg-icon {
+  /* display: none; */
+}
+
+#newBg-text {
+  font-weight: 600;
+}
+
+#apiKey {
+  display: none;
+  width: 150px;
+  height: calc(100% - 15px);
+  border: none;
+  background-color: rgba(0, 0, 0, 0.449);
+  outline: none;
+  color: white;
+  border-radius: 4px;
+  padding-left: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.404);
+}
+
+#apiKey::placeholder {
+  color: rgba(255, 255, 255, 0.587);
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+#random-background-fetch-btn {
+  cursor: pointer;
 }

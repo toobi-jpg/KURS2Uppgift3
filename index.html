@@ -15,7 +15,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./css/weathers.css" />
     <script src="./scripts/script.js" defer></script>
     <title>F25D-The Dashboard</title>
   </head>
@@ -140,6 +139,21 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div id="random-background-btn" class="bg-btn">
+        <i id="settings-icon" class="fa-solid fa-gear fa-lg"></i>
+        <input
+          id="apiKey"
+          type="text"
+          placeholder="Unsplash API Key"
+          autocomplete="off"
+        />
+      </div>
+
+      <div id="random-background-fetch-btn" class="bg-btn">
+        <i id="newBg-icon" class="fa-solid fa-rotate-right"></i>
+        <p id="newBg-text">Random Background</p>
       </div>
     </main>
   </body>
