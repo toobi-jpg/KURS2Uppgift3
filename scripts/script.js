@@ -400,13 +400,13 @@ notesText.addEventListener("input", () => {
 });
 // ..........................................................................
 // Position logik ...........................................................
+const locationDiv = document.querySelector(".location-div");
 const locationInput = document.querySelector("#location-input");
 const locationSpan = document.querySelector("#current-location-span");
-const pin = document.querySelector("#pin");
 let savedwLocation = localStorage.getItem("wLocation");
 
 function showLocationInput() {
-  pin.classList.add("hide-pin");
+  locationDiv.style.display = "none";
   locationInput.classList.add("show-input");
   locationInput.focus();
   setTimeout(() => {
@@ -417,13 +417,13 @@ function showLocationInput() {
 function hideLocationInput() {
   locationInput.style.width = "30px";
   setTimeout(() => {
-    pin.classList.remove("hide-pin");
+    locationDiv.style.display = "flex";
     locationInput.classList.remove("show-input");
     locationInput.blur();
   }, 50);
 }
 
-pin.addEventListener("click", () => {
+locationSpan.addEventListener("click", () => {
   showLocationInput();
 });
 
@@ -473,26 +473,14 @@ async function getLocation(location = "Stockholm") {
 }
 
 // Väder logik ..............................................................
-const todayImage = document.querySelector("#today-img");
-const todayCelcius = document.querySelector("#today-celcius-span");
+
 const todayForecast = document.querySelector("#today-forecast-span");
 
-const tomorrowImage = document.querySelector("#tomorrow-img");
-const tomorrowCelcius = document.querySelector("#tomorrow-celcius-span");
 const tomorrowForecast = document.querySelector("#tomorrow-forecast-span");
 document.querySelector("#tomorrow-title").textContent = dayTomorrow;
 
-const thirdImage = document.querySelector("#third-img");
-const thirdCelcius = document.querySelector("#third-celcius-span");
 const thirdForecast = document.querySelector("#third-forecast-span");
 document.querySelector("#third-title").textContent = dayAfterTomorrow;
-
-let clear = "fa-solid fa-sun fa-xl";
-let cloud = "fa-solid fa-cloud fa-xl";
-let fog = "fa-solid fa-smog fa-xl";
-let rain = "fa-solid fa-umbrella fa-xl";
-let snow = "fa-solid fa-snowflake fa-xl";
-let thunder = "fa-solid fa-cloud-bolt fa-xl";
 
 async function getWeather(lat = "59.32", lon = "18.07") {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,weather_code&forecast_days=3`;
@@ -508,36 +496,80 @@ async function getWeather(lat = "59.32", lon = "18.07") {
   }
 }
 
-function placeWeather(data) {
-  let celcius = data.daily.temperature_2m_max;
-  let forecast = data.daily.weather_code;
+// WMO weather code & images ....................
+async function fetchGistData() {
+  const gistUrl = `https://api.github.com/gists/9490c195ed2b53c707087c8c2db4ec0c`;
 
-  const images = [todayImage, tomorrowImage, thirdImage];
-  const forecasts = [todayForecast, tomorrowForecast, thirdForecast];
+  try {
+    const response = await fetch(gistUrl);
 
-  for (let i = 0; i < forecast.length; i++) {
-    const wCode = forecast[i];
-
-    if (wCode >= 0 && wCode < 3) {
-      images[i].className = clear;
-      forecasts[i].textContent = "Clear";
-    } else if (wCode >= 3 && wCode < 45) {
-      images[i].className = cloud;
-      forecasts[i].textContent = "Cloudy";
-    } else if (wCode >= 45 && wCode < 61) {
-      images[i].className = fog;
-      forecasts[i].textContent = "Fog";
-    } else if ((wCode >= 61 && wCode < 71) || (wCode >= 80 && wCode <= 82)) {
-      images[i].className = rain;
-      forecasts[i].textContent = "Rain";
-    } else if (wCode >= 71 && wCode < 95) {
-      images[i].className = snow;
-      forecasts[i].textContent = "Snow";
-    } else if (wCode >= 95) {
-      images[i].className = thunder;
-      forecasts[i].textContent = "Thunder";
+    if (!response.ok) {
+      throw new Error("Response not ok!: ", response.status);
     }
+    const gistData = await response.json();
+    const files = gistData.files;
+    const firstFile = Object.keys(files)[0];
+    const fileContent = files[firstFile].content;
+    // Tog 1 timme att lista ut att vid firstFile konverterades formatet till en string... Försökte parsa en string med for in och liknande. Här hade typescript sparat mig tid tror jag!
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error("Error:", error);
   }
+}
+
+// Svårast hittills.....
+async function placeWeather(data) {
+  const weatherDiv = document.querySelectorAll(".weather-div");
+  const celcius = data.daily.temperature_2m_max;
+  const forecast = data.daily.weather_code;
+
+  const wmoContent = await fetchGistData();
+
+  forecast.forEach((wcode, index) => {
+    if (wmoContent.hasOwnProperty(wcode)) {
+      const dayData = wmoContent[wcode].day;
+      const nightData = wmoContent[wcode].night;
+      const desc = nightData.description;
+      const image = nightData.image;
+
+      const wImage = weatherDiv[index].querySelector(".weather-image");
+      const wDesc = weatherDiv[index].querySelector(".forecast-span");
+      const weatherAtmo = weatherDiv[index].querySelector(".weather-atmo");
+
+      if (desc.includes("Sunny") || desc.includes("Clear")) {
+        weatherAtmo.className = "weather-atmo clear";
+      }
+      if (
+        desc.includes("Cloudy" || desc.includes("Foggy")) ||
+        desc.includes("Fog")
+      ) {
+        weatherAtmo.className = "weather-atmo cloudy";
+      }
+      if (desc.includes("Partly")) {
+        weatherAtmo.className = "weather-atmo partly";
+      }
+      if (desc.includes("Snow")) {
+        weatherAtmo.className = "weather-atmo snow";
+      }
+      if (
+        desc.includes("Drizzle" || desc.includes("Rain")) ||
+        desc.includes("Showers") ||
+        desc.includes("Hail")
+      ) {
+        weatherAtmo.className = "weather-atmo rain";
+      }
+      if (desc.includes("Thunderstorm")) {
+        weatherAtmo.className = "weather-atmo thunderstorm";
+      }
+
+      wImage.src = image;
+      wDesc.textContent = desc;
+    }
+  });
+
+  const todayCelcius = document.querySelector("#today-celcius-span");
+  const tomorrowCelcius = document.querySelector("#tomorrow-celcius-span");
+  const thirdCelcius = document.querySelector("#third-celcius-span");
 
   todayCelcius.textContent = `${Math.ceil(celcius[0])}°C`;
   tomorrowCelcius.textContent = `${Math.ceil(celcius[1])}°C`;
@@ -637,9 +669,15 @@ getCapitals();
 const bg = document.querySelector("#background-image");
 const bgKeyBtn = document.querySelector("#random-background-btn");
 const bgBtn = document.querySelector("#random-background-fetch-btn");
+const clearBgBtn = document.querySelector("#clearImageStorageBtn");
+const infoText = document.querySelector("#clear-info-text");
+const randomImageInfo = document.querySelector("#random-image-info-text");
+const bgBtnImage = document.querySelector("#newBg-icon");
+const clearApiBtn = document.querySelector("#clearApiKeyBtn");
+const clearApiInfoText = document.querySelector("#clearApiKey-info-text");
 const apiKeyInput = document.querySelector("#apiKey");
-const savedKey = localStorage.getItem("key");
 
+const savedKey = localStorage.getItem("key");
 const savedImage = localStorage.getItem("imageUrl");
 
 if (savedKey) {
@@ -648,7 +686,33 @@ if (savedKey) {
 } else {
   bgKeyBtn.style.display = "flex";
   bgBtn.style.display = "none";
+  localStorage.removeItem("imageUrl");
+  bg.style.backgroundImage = "";
 }
+
+clearImageStorageBtn.addEventListener("mouseenter", () => {
+  infoText.style.display = "flex";
+});
+
+clearImageStorageBtn.addEventListener("mouseleave", () => {
+  infoText.style.display = "none";
+});
+
+clearApiBtn.addEventListener("mouseenter", () => {
+  clearApiInfoText.style.display = "flex";
+});
+
+clearApiBtn.addEventListener("mouseleave", () => {
+  clearApiInfoText.style.display = "none";
+});
+
+bgBtnImage.addEventListener("mouseenter", () => {
+  randomImageInfo.style.display = "flex";
+});
+
+bgBtnImage.addEventListener("mouseleave", () => {
+  randomImageInfo.style.display = "none";
+});
 
 if (savedImage) {
   bg.style.backgroundImage = `url(${savedImage})`;
@@ -656,25 +720,37 @@ if (savedImage) {
   bg.style.backgroundImage = "";
 }
 
+clearBgBtn.addEventListener("click", () => {
+  localStorage.removeItem("imageUrl");
+  bg.style.backgroundImage = "";
+});
+
+clearApiBtn.addEventListener("click", () => {
+  localStorage.removeItem("key");
+  localStorage.removeItem("imageUrl");
+  console.log("Clear api button clicked");
+  bg.style.backgroundImage = "";
+  location.reload();
+});
+
 apiKeyInput.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     localStorage.setItem("key", apiKeyInput.value);
     apiKeyInput.value = "";
-    console.log(localStorage.getItem("key"));
+    location.reload();
   }
 });
 
-bgBtn.addEventListener("click", () => {
+bgBtnImage.addEventListener("click", () => {
   getImage(savedKey);
 });
 
 async function getImage(key) {
-  const accessKey = key;
   const topicNature = "6sMVjTLSkeQ";
   const topicWallpaper = "9dKjUlgjt5A";
   const topicTextures = "8L2xg3CqN9w";
   const topicSports = "7OQHeV3qjXk";
-  const unsplashURL = `https://api.unsplash.com/photos/random?topics=${topicNature}&client_id=${accessKey}`;
+  const unsplashURL = `https://api.unsplash.com/photos/random?topics=${topicNature}&client_id=${key}`;
   try {
     const response = await fetch(unsplashURL);
     if (!response.ok) {
@@ -682,12 +758,182 @@ async function getImage(key) {
     }
     unsplashData = await response.json();
     imageUrl = unsplashData.urls.full.toString();
-    imageTopic = unsplashData.topics[0].title.toString();
-    // console.log(imageUrl);
-    // console.log(imageTopic);
+    if (
+      unsplashData.topics &&
+      unsplashData.topics.length > 0 &&
+      unsplashData.topics[0].title
+    ) {
+      imageTopic = unsplashData.topics[0].title.toString();
+    } else {
+      imageTopic = "Topic not found";
+    }
+
     localStorage.setItem("imageUrl", imageUrl);
     bg.style.backgroundImage = `url(${imageUrl})`;
   } catch (error) {
     console.error(error.message);
   }
 }
+// ..........................................................................
+// Github logik .............................................................
+const githubContent = document.querySelector("#github-content");
+const githubUserDiv = document.querySelector(".github-user-div");
+const githubUserText = document.querySelector("#github-user-text");
+const githubCard = document.querySelector("#github-card");
+const githubInput = document.querySelector("#github-user-input");
+
+const savedGithubUser = localStorage.getItem("githubUser");
+
+if (savedGithubUser) {
+  githubUserText.textContent = savedGithubUser;
+} else {
+  githubUserText.textContent = "toobi-jpg";
+}
+
+async function getGithub(user = "toobi-jpg") {
+  const githubUrl = `https://api.github.com/users/${user}/repos?sort=created&direction=desc&per_page=3`;
+  try {
+    const response = await fetch(githubUrl);
+    if (!response.ok) {
+      throw new Error("Github users response not ok!", response.status);
+    }
+    GithubData = await response.json();
+    githubUser = GithubData[0].owner.login;
+    localStorage.setItem("githubUser", githubUser);
+    renderGithub(GithubData);
+    githubUserText.textContent = githubUser;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+function renderGithub(data) {
+  data.forEach((repo, index) => {
+    let repoDiv = document.createElement("div");
+    repoDiv.classList.add("repo-div");
+    repoDiv.id = `repo-div-${index + 1}`;
+
+    let repoNameDiv = document.createElement("div");
+    repoNameDiv.classList.add("repo-name-div");
+
+    let repoIcon = document.createElement("i");
+    repoIcon.className = "fa-solid fa-code-branch fa-xs repo-icon";
+
+    let repoName = document.createElement("p");
+    repoName.classList.add("repo-name");
+    repoName.id = `repo-name-${index + 1}`;
+    repoName.textContent = repo.name;
+
+    let statsDiv = document.createElement("div");
+    statsDiv.classList.add("repo-stats-div");
+    statsDiv.id = `repo-stats-div-${index + 1}`;
+
+    let languageContainer = document.createElement("div");
+    languageContainer.classList.add("repo-container-small");
+    languageContainer.id = `language-container-${index + 1}`;
+    let languageTitle = document.createElement("p");
+    languageTitle.classList.add("repo-stats-title");
+    languageTitle.textContent = "Lang:";
+    let languageText = document.createElement("p");
+    languageText.classList.add("small-span-lang");
+    languageText.id = `repo-language-${index + 1}`;
+    languageText.textContent = repo.language;
+
+    languageContainer.appendChild(languageTitle);
+    languageContainer.appendChild(languageText);
+
+    let issuesContainer = document.createElement("div");
+    issuesContainer.classList.add("repo-container-small");
+    issuesContainer.id = `issues-container-${index + 1}`;
+    let issuesTitle = document.createElement("p");
+    issuesTitle.classList.add("repo-stats-title");
+    issuesTitle.textContent = "Issues:";
+    let issuesText = document.createElement("p");
+    issuesText.classList.add("small-span");
+    issuesText.id = `repo-issues-${index + 1}`;
+    issuesText.textContent = repo.open_issues_count;
+
+    issuesContainer.appendChild(issuesTitle);
+    issuesContainer.appendChild(issuesText);
+
+    let forksContainer = document.createElement("div");
+    forksContainer.classList.add("repo-container-small");
+    forksContainer.id = `forks-container-${index + 1}`;
+    let forksTitle = document.createElement("p");
+    forksTitle.classList.add("repo-stats-title");
+    forksTitle.textContent = "Forks:";
+    let forksText = document.createElement("p");
+    forksText.classList.add("small-span");
+    forksText.id = `repo-forks-${index + 1}`;
+    forksText.textContent = repo.forks_count;
+
+    let repoLinkButton = document.createElement("a");
+    repoLinkButton.classList.add("github-repo-link");
+    repoLinkButton.href = repo.html_url;
+    repoLinkButton.target = "_blank";
+
+    forksContainer.appendChild(forksTitle);
+    forksContainer.appendChild(forksText);
+
+    statsDiv.appendChild(languageContainer);
+    statsDiv.appendChild(issuesContainer);
+    statsDiv.appendChild(forksContainer);
+
+    repoDiv.appendChild(repoNameDiv);
+
+    repoNameDiv.appendChild(repoIcon);
+    repoNameDiv.appendChild(repoName);
+    repoDiv.appendChild(statsDiv);
+    repoDiv.appendChild(repoLinkButton);
+
+    githubContent.appendChild(repoDiv);
+  });
+}
+
+function clearGithub() {
+  let repoDivs = document.querySelectorAll(".repo-div");
+  repoDivs.forEach((div) => {
+    div.remove();
+  });
+}
+
+function showGithubInput() {
+  githubUserDiv.style.display = "none";
+  githubInput.style.display = "flex";
+  githubInput.focus();
+  setTimeout(() => {
+    githubInput.style.width = "240px";
+  }, 5);
+}
+
+function hideGithubInput() {
+  githubInput.style.width = "";
+  githubInput.value = "";
+  githubInput.blur();
+  setTimeout(() => {
+    githubUserDiv.style.display = "flex";
+    githubInput.style.display = "none";
+  }, 100);
+}
+
+githubUserText.addEventListener("click", () => {
+  showGithubInput();
+});
+
+githubInput.addEventListener("blur", () => {
+  hideGithubInput();
+});
+
+githubInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    clearGithub();
+    getGithub(githubInput.value.toString());
+    hideGithubInput();
+  }
+  if (event.key === "Escape") {
+    hideGithubInput();
+  }
+});
+
+getGithub(savedGithubUser);
+//............................................................................

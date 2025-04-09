@@ -9,7 +9,6 @@ html {
 
 body {
   width: 100vw;
-  height: 100vh;
   min-height: 100vh;
 }
 
@@ -20,19 +19,26 @@ main {
   align-items: center;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   min-height: 100vh;
 }
 
+:root {
+  --baseCard: color: rgba(255, 255, 255, 0.309);
+  --baseDiv: color: rgba(255, 255, 255, 0.608);
+  --divHover: color: rgba(230, 230, 230, 0.608);
+  --baseInput: color: rgba(196, 196, 196, 0.694);
+  --baseDate: color: rgba(255, 255, 255, 0.092);
+  --baseSettings: color: rgba(0, 0, 0, 0.331);
+}
+
 #background-image {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   background-image: url("../images/macos-big-sur-stock-night-lone-tree-sedimentary-rocks-3840x2160-3776.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
-  min-height: 100%;
   height: 100%;
   z-index: -1;
 }
@@ -127,21 +133,24 @@ main {
   height: inherit;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.309);
-  backdrop-filter: blur(3px) grayscale(0%) brightness(80%);
+  backdrop-filter: blur(3px) grayscale(20%) brightness(95%);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.411);
   transition: 0.1s ease-in;
   padding: 20px 0px;
 }
+
+/* @media (max-width: 1500px) {
+  .card {
+    height: 340px;
+    width: 260px;
+  }
+} */
 
 .card h2 {
   color: white;
   font-weight: 400;
   letter-spacing: 1px;
   font-size: 28px;
-}
-
-.card:hover {
-  background-color: rgba(255, 255, 255, 0.291);
 }
 
 .card-content {
@@ -295,7 +304,7 @@ button:hover {
   border-radius: 8px;
   border: none;
   outline: none;
-  background-color: rgba(196, 196, 196, 0.694);
+  background-color: rgba(217, 217, 217, 0.694);
   color: white;
   padding-left: 20px;
   transition: 0.1s ease-in;
@@ -391,21 +400,60 @@ button:hover {
 
 .weather-div {
   position: relative;
-  padding-left: 13px;
+  /* padding-left: 13px; */
   display: flex;
   align-items: center;
   width: 100%;
   max-height: 55px;
   height: 55px;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.608);
-  transition: 0.15s ease-in;
+  background-color: rgba(255, 255, 255, 0.6);
   overflow: hidden;
 }
 
-.weather-div i {
-  opacity: 70%;
-  max-width: 25px;
+.weather-atmo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  /* border: 1px solid red; */
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  z-index: -1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: grayscale(80%);
+}
+
+.clear {
+  background-image: url(../images/Clear.png);
+  opacity: 100%;
+}
+.cloudy {
+  background-image: url(../images/Cloudy.png);
+  opacity: 50%;
+}
+.partly {
+  background-image: url(../images/PartlyCloudy.png);
+  opacity: 50%;
+}
+.rain {
+  background-image: url(../images/Rain.png);
+  filter: grayscale(80%) contrast(200%);
+}
+.snow {
+  background-image: url(../images/Snow.png);
+}
+.thunderstorm {
+  background-image: url(../images/Thunderstorm.png);
+  filter: grayscale(80%) contrast(200%);
+}
+
+.weather-image {
+  max-width: 65px;
+  /* border: 1px solid purple; */
+  object-fit: cover;
+  /* display: none; */
 }
 
 .weather-content {
@@ -414,7 +462,7 @@ button:hover {
   /* border: 1px solid red; */
   width: 100%;
   height: 70%;
-  margin-left: 15px;
+  /* margin-left: 15px; */
   gap: 3px;
 }
 
@@ -453,7 +501,7 @@ button:hover {
 
 #location-input {
   width: 20px;
-  margin-bottom: 5px;
+  margin-top: 10px;
   display: none;
   opacity: 0;
 }
@@ -512,25 +560,31 @@ button:hover {
   opacity: 60%;
 }
 
+.location-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  height: auto;
+  margin-top: 10px;
+}
+
 #current-location-span {
-  position: absolute;
   font-weight: 500;
   color: white;
-  bottom: 55px;
+  cursor: pointer;
+  transition: .1s ease-in;
+}
+
+#current-location-span:hover {
+  opacity: 70%;
+  transform: translateY(-2px);
 }
 
 #pin {
-  position: absolute;
   color: white;
-  bottom: 36px;
-  cursor: pointer;
   opacity: 60%;
-  transition: 0.1s ease-in;
-}
-
-#pin:hover {
-  transform: translateY(-2px);
-  opacity: 80%;
 }
 
 .hide-pin {
@@ -545,7 +599,7 @@ button:hover {
   position: absolute;
   width: 35px;
   height: 35px;
-  background-color: rgba(0, 0, 0, 0.331);
+  background-color: rgba(0, 0, 0, 0.499);
   top: 20px;
   right: 20px;
   border-radius: 10px;
@@ -558,45 +612,112 @@ button:hover {
   margin: 0;
 }
 
-.bg-btn p {
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 70%;
-  opacity: 0;
-  display: none;
-  height: 1rem;
-  white-space: nowrap;
-}
-
 .bg-btn i {
-  opacity: 70%;
   transition: transform 0.2s ease-in;
 }
 
 .bg-btn:hover {
-  background-color: rgba(0, 0, 0, 0.331);
-  width: 210px;
-}
-
-.bg-btn:hover i {
-  transform: rotate(360deg);
-}
-
-.bg-btn:hover p {
-  opacity: 1;
-  display: flex;
+  background-color: rgba(0, 0, 0, 0.499);
+  width: 120px;
 }
 
 .bg-btn:hover input {
   display: flex;
 }
 
-#newBg-icon {
-  /* display: none; */
-}
-
 #newBg-text {
   font-weight: 600;
+  cursor: pointer;
+}
+
+.bg-btn:hover #clearImageStorageBtn {
+  display: flex;
+}
+
+.bg-btn:hover #clearApiKeyBtn {
+  display: flex;
+}
+
+#clearImageStorageBtn {
+  margin-right: 10px;
+  display: none;
+  z-index: 99999;
+  opacity: 70%;
+  cursor: pointer;
+}
+
+#clearImageStorageBtn:hover {
+  opacity: 100%;
+  transform: rotate(450deg);
+}
+
+#clearApiKeyBtn {
+  margin-right: 10px;
+  display: none;
+  z-index: 99999;
+  opacity: 70%;
+  cursor: pointer;
+}
+
+#clearApiKeyBtn:hover {
+  opacity: 100%;
+  transform: scale(110%) rotate(-20deg);
+}
+
+#newBg-icon {
+  cursor: pointer;
+  opacity: 70%;
+}
+
+#newBg-icon:hover {
+  opacity: 100%;
+  transform: scale(110%);
+}
+
+#clear-info-text {
+  display: none;
+  position: absolute;
+  top: 70px;
+  right: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.51);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+#clearApiKey-info-text {
+  display: none;
+  position: absolute;
+  top: 70px;
+  right: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.51);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+#random-image-info-text {
+  display: none;
+  position: absolute;
+  top: 70px;
+  right: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.51);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+
+#random-background-btn:hover {
+  width: 180px;
+}
+
+#random-background-btn:hover #settings-icon {
+  display: none;
+}
+
+#random-background-btn:hover #apiKey {
+  display: flex;
 }
 
 #apiKey {
@@ -618,6 +739,137 @@ button:hover {
   margin-left: 10px;
 }
 
-#random-background-fetch-btn {
+.repo-div {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  max-height: 55px;
+  height: 55px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.608);
+  transition: 0.15s ease-in;
+  overflow: hidden;
+  gap: 5px;
+  padding: 0px;
+}
+
+.repo-div:hover {
+  background-color: rgba(230, 230, 230, 0.608);
+}
+
+.repo-name-div {
+  display: flex;
+  align-self: flex-start;
+  margin-left: 25px;
+  /* border: 1px solid red; */
+  gap: 5px;
+  opacity: 80%;
+}
+
+.repo-name {
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.repo-icon {
+  margin-top: 7px;
+}
+
+.repo-stats-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid blue; */
+  width: 100%;
+  gap: 13px;
+}
+
+.repo-container-small {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  width: auto;
+  background-color: rgba(0, 0, 0, 0.33);
+  border-radius: 6px;
+  padding: 3px 6px;
+  /* border: 1px solid purple; */
+  gap: 3px;
+}
+
+.repo-container-small p {
+  color: white;
+  font-weight: 600;
+}
+
+.repo-stats-title {
+  font-size: 11px;
+  opacity: 70%;
+}
+
+.small-span {
+  font-size: 11px;
+}
+
+.small-span-lang {
+  font-weight: 550;
+  font-size: 10px;
+}
+
+.github-repo-link {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  z-index: 999;
+}
+
+.github-user-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  height: auto;
+  margin-top: 10px;
+}
+
+#github-icon {
+  color: white;
+  opacity: 70%;
+}
+
+#github-user-text {
+  color: white;
+  font-weight: 450;
   cursor: pointer;
+  transition: .1s ease-in;
+}
+
+#github-user-text:hover {
+  opacity: 70%;
+  transform: translateY(-2px);
+}
+
+
+#github-user-input {
+  display: none;
+  width: 0px;
+  margin-top: 10px;
+}
+
+#github-user-input::placeholder {
+  color: rgb(255, 255, 255);
+  opacity: 70%;
+  font-weight: 500;
+}
+
+#github-card {
+  overflow: hidden;
 }

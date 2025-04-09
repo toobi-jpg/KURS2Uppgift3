@@ -47,59 +47,64 @@
           <h2>Weather</h2>
           <div id="weather-container" class="card-content">
             <div id="today-weather-div" class="weather-div">
-              <i id="today-img" class="fa-solid fa-cloud fa-xl"></i>
+              <div class="weather-atmo"></div>
+              <img src="" alt="" class="weather-image" />
               <div class="weather-content">
                 <p class="day-title">Today</p>
                 <div class="weather-line-div">
                   <div id="today-celcius" class="weather-small-container">
-                    <p id="today-celcius-span">4Cel</p>
+                    <p id="today-celcius-span" class="celcius-span"></p>
                   </div>
                   <div
                     id="today-forecast"
                     class="weather-small-container forecast"
                   >
-                    <p id="today-forecast-span">Måln</p>
+                    <p class="forecast-span"></p>
                   </div>
                 </div>
               </div>
             </div>
             <div id="tomorrow-weather-div" class="weather-div">
-              <i id="tomorrow-img" class="fa-solid fa-sun fa-xl"></i>
+              <div class="weather-atmo"></div>
+              <img src="" alt="" class="weather-image" />
               <div class="weather-content">
-                <p id="tomorrow-title" class="day-title">Tomorrow</p>
+                <p id="tomorrow-title" class="day-title"></p>
                 <div class="weather-line-div">
                   <div id="tomorrow-celcius" class="weather-small-container">
-                    <p id="tomorrow-celcius-span">Test2</p>
+                    <p id="tomorrow-celcius-span" class="celcius-span"></p>
                   </div>
                   <div
                     id="tomorrow-forecast"
                     class="weather-small-container forecast"
                   >
-                    <p id="tomorrow-forecast-span">Sol</p>
+                    <p class="forecast-span"></p>
                   </div>
                 </div>
               </div>
             </div>
             <div id="third-weather-div" class="weather-div">
-              <i id="third-img" class="fa-solid fa-cloud-bolt fa-xl"></i>
+              <div class="weather-atmo"></div>
+              <img src="" alt="" class="weather-image" />
               <div class="weather-content">
-                <p id="third-title" class="day-title">Monday</p>
+                <p id="third-title" class="day-title"></p>
                 <div class="weather-line-div">
                   <div id="third-celcius" class="weather-small-container">
-                    <p id="third-celcius-span">Test3</p>
+                    <p id="third-celcius-span" class="celcius-span"></p>
                   </div>
                   <div
                     id="third-forecast"
                     class="weather-small-container forecast"
                   >
-                    <p id="third-forecast-span">Blixt</p>
+                    <p class="forecast-span"></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <p id="current-location-span"></p>
-          <i id="pin" class="fa-solid fa-location-dot fa-xl"></i>
+          <div class="location-div">
+            <i id="pin" class="fa-solid fa-location-dot fa-lg"></i>
+            <p id="current-location-span"></p>
+          </div>
           <input
             type="text"
             autocomplete="off"
@@ -109,9 +114,19 @@
           <div id="search-filter-container"></div>
         </div>
 
-        <div id="" class="card">
-          <h2>News</h2>
-          <div class="card-content"></div>
+        <div id="github-card" class="card">
+          <h2>Repositories</h2>
+          <div id="github-content" class="card-content"></div>
+          <div class="github-user-div">
+            <i id="github-icon" class="fa-brands fa-github fa-lg"></i>
+            <p id="github-user-text">Testing</p>
+          </div>
+          <input
+            type="text"
+            id="github-user-input"
+            class="input-style"
+            placeholder="Github username..."
+          />
         </div>
 
         <div id="notes-card" class="card">
@@ -152,9 +167,13 @@
       </div>
 
       <div id="random-background-fetch-btn" class="bg-btn">
-        <i id="newBg-icon" class="fa-solid fa-rotate-right"></i>
-        <p id="newBg-text">Random Background</p>
+        <i id="clearApiKeyBtn" class="fa-solid fa-trash-can"></i>
+        <i id="clearImageStorageBtn" class="fa-solid fa-rotate-right"></i>
+        <i id="newBg-icon" class="fa-solid fa-image"></i>
       </div>
+      <p id="random-image-info-text">Random Background</p>
+      <p id="clear-info-text">Restore original background image</p>
+      <p id="clearApiKey-info-text">Delete Unsplash Api Key</p>
     </main>
   </body>
 </html>
