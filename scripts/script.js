@@ -464,11 +464,21 @@ async function getLocation(location = "Stockholm") {
     let lon = locationData[0].lon.slice(0, -5);
 
     getWeather(lat, lon);
-
-    ("https://api.open-meteo.com/v1/forecast?latitude=59.33&longitude=18.06&daily=temperature_2m_max,weather_code&forecast_days=3");
+    locationSpan.placeholder = "";
+    hideLocationInput();
+    if (savedKey && location !== "Stockholm" && location !== savedwLocation) {
+      fetchLocationImage(savedKey, location);
+      console.log("New location image fetched");
+    } else if (location == "Stockholm") {
+      locationImage.style.backgroundImage = "url(./images/Stockholm.jpg)";
+    } else {
+      console.log("Saved location image is still set");
+    }
   } catch (error) {
-    let notFound = "Location not found";
-    console.error(notFound);
+    let locationNotFound = "Location not found";
+    console.error(locationNotFound);
+    showLocationInput();
+    locationInput.placeholder = locationNotFound;
   }
 }
 
@@ -519,6 +529,13 @@ async function fetchGistData() {
 
 // Svårast hittills.....
 async function placeWeather(data) {
+  // wmoData har bilder med som jag matchade id till väder kod men dessa bilder var fula så jag bytte ut mot fontawsome bilder tillslut. Hade kunnat skippa denna typ av itteration.
+  let cloudy = "bx bx-cloud";
+  let clear = "bx bx-sun";
+  let partly = "bx bx-cloud";
+  let rain = "bx bx-cloud-rain";
+  let snow = "bx bx-cloud-snow";
+  let thunder = "bx bx-cloud-lightning";
   const weatherDiv = document.querySelectorAll(".weather-div");
   const celcius = data.daily.temperature_2m_max;
   const forecast = data.daily.weather_code;
@@ -530,39 +547,46 @@ async function placeWeather(data) {
       const dayData = wmoContent[wcode].day;
       const nightData = wmoContent[wcode].night;
       const desc = nightData.description;
-      const image = nightData.image;
 
-      const wImage = weatherDiv[index].querySelector(".weather-image");
+      const wImage = weatherDiv[index].querySelector("#weather-image");
       const wDesc = weatherDiv[index].querySelector(".forecast-span");
       const weatherAtmo = weatherDiv[index].querySelector(".weather-atmo");
 
       if (desc.includes("Sunny") || desc.includes("Clear")) {
         weatherAtmo.className = "weather-atmo clear";
+        wImage.className = clear;
       }
-      if (
-        desc.includes("Cloudy" || desc.includes("Foggy")) ||
-        desc.includes("Fog")
-      ) {
+      if (desc.includes("Cloudy")) {
         weatherAtmo.className = "weather-atmo cloudy";
+        wImage.className = cloudy;
       }
+      if (desc.includes("Foggy") || desc.includes("Fog")) {
+        weatherAtmo.className = "weather-atmo cloudy";
+        wImage.className = cloudy;
+      }
+
       if (desc.includes("Partly")) {
         weatherAtmo.className = "weather-atmo partly";
+        wImage.className = partly;
       }
       if (desc.includes("Snow")) {
         weatherAtmo.className = "weather-atmo snow";
+        wImage.className = snow;
       }
       if (
-        desc.includes("Drizzle" || desc.includes("Rain")) ||
+        desc.includes("Drizzle") ||
+        desc.includes("Rain") ||
         desc.includes("Showers") ||
         desc.includes("Hail")
       ) {
         weatherAtmo.className = "weather-atmo rain";
+        wImage.className = rain;
       }
       if (desc.includes("Thunderstorm")) {
         weatherAtmo.className = "weather-atmo thunderstorm";
+        wImage.className = thunder;
       }
 
-      wImage.src = image;
       wDesc.textContent = desc;
     }
   });
@@ -781,13 +805,18 @@ const githubUserDiv = document.querySelector(".github-user-div");
 const githubUserText = document.querySelector("#github-user-text");
 const githubCard = document.querySelector("#github-card");
 const githubInput = document.querySelector("#github-user-input");
+const userIcon = document.querySelector("#user-icon");
 
 const savedGithubUser = localStorage.getItem("githubUser");
+const savedUserIcon = localStorage.getItem("githubUserIcon");
 
 if (savedGithubUser) {
   githubUserText.textContent = savedGithubUser;
+  userIcon.style.backgroundImage = `url(${savedUserIcon})`;
+  getGithub(savedGithubUser);
 } else {
   githubUserText.textContent = "toobi-jpg";
+  getGithub();
 }
 
 async function getGithub(user = "toobi-jpg") {
@@ -799,11 +828,17 @@ async function getGithub(user = "toobi-jpg") {
     }
     GithubData = await response.json();
     githubUser = GithubData[0].owner.login;
+    userIconUrl = GithubData[0].owner.avatar_url;
     localStorage.setItem("githubUser", githubUser);
+    localStorage.setItem("githubUserIcon", userIconUrl);
     renderGithub(GithubData);
     githubUserText.textContent = githubUser;
+    userIcon.style.backgroundImage = `url(${userIconUrl})`;
   } catch (error) {
-    console.error(error.message);
+    let userNotFound = "User not found";
+    console.error(userNotFound);
+    githubInput.placeholder = userNotFound;
+    showGithubInput();
   }
 }
 
@@ -935,5 +970,28 @@ githubInput.addEventListener("keydown", (event) => {
   }
 });
 
-getGithub(savedGithubUser);
 //............................................................................
+// Location bild på väder logik ..............................................
+const locationImage = document.querySelector("#location-image");
+const savedwLocationImage = localStorage.getItem("savedLImage");
+
+if (savedKey && savedwLocation && savedwLocationImage) {
+  locationImage.style.backgroundImage = `url(${savedwLocationImage})`;
+}
+
+async function fetchLocationImage(key, location) {
+  const locationImageUrl = `https://api.unsplash.com/photos/random?topics=cityscapes&query=${location}&client_id=${key}`;
+
+  try {
+    const response = await fetch(locationImageUrl);
+    if (!response.ok) {
+      throw new Error("Response not ok!", response.status);
+    }
+    const imageData = await response.json();
+    const image = imageData.urls.small_s3.toString();
+    locationImage.style.backgroundImage = `url(${image})`;
+    localStorage.setItem("savedLImage", image);
+  } catch (error) {
+    console.error("Error: ", error);
+  }
+}
