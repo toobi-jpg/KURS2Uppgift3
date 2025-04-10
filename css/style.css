@@ -286,12 +286,20 @@ button:hover {
   background-color: rgba(255, 255, 255, 0.412);
 }
 
+#add-link-button {
+  margin-top: 10px;
+  width: 110px;
+  gap: 6px;
+}
+
 #add-link-icon {
   color: rgba(255, 255, 255, 0.617);
   margin-top: 2px;
+  font-size: 18px;
 }
 
 #add-link-div {
+  margin-top: 10px;
   position: relative;
   height: auto;
   width: auto;
@@ -329,11 +337,11 @@ button:hover {
 #add-link-icon-input {
   position: absolute;
   color: white;
-  right: 10px;
-  bottom: 13px;
-  justify-self: center;
-  opacity: 60%;
+  right: 5px;
+  top: 2px;
+  opacity: 50%;
   cursor: pointer;
+  font-size: 22px;
 }
 
 #add-link-icon-input:hover {
@@ -792,22 +800,44 @@ button:hover {
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
 }
 
+.repo-div-background {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  z-index: -1;
+  background-image: url(../images/GithubdivBg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: invert(1);
+  transition: 0.1s ease-in;
+  opacity: 50%;
+  -webkit-mask-image: linear-gradient(#000, rgba(0, 0, 0, 0));
+  mask-image: linear-gradient(#000, rgba(0, 0, 0, 0));
+}
+
 .repo-div:hover {
   background-color: rgba(230, 230, 230, 0.608);
 }
 
-.repo-name-div {
-  display: flex;
-  align-self: flex-start;
-  margin-left: 25px;
-  /* border: 1px solid red; */
-  gap: 5px;
-  opacity: 80%;
+.repo-div:hover .repo-div-background {
+  transform: scale(105%);
+  filter: invert(0);
+  opacity: 60%;
+}
+
+.repo-div:hover .repo-name {
+  filter: invert(1);
+  opacity: 100%;
 }
 
 .repo-name {
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 700;
+  opacity: 75%;
+  text-align: center;
 }
 
 .repo-icon {
@@ -923,4 +953,13 @@ button:hover {
   opacity: 40%;
   bottom: -30px;
   transform: scale(70%);
+}
+
+.line-helper {
+  position: absolute;
+  z-index: 99999;
+  background-color: red;
+  width: 100vw;
+  height: 2px;
+  top: 74%;
 }

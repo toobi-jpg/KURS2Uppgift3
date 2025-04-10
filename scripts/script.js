@@ -458,8 +458,6 @@ async function getLocation(location = "Stockholm") {
       throw new Error("Response not ok!:", response.status);
     }
     const locationData = await response.json();
-    // console.log("Latitude:", locationData[0].lat.slice(0, -5));
-    // console.log("Longitude:", locationData[0].lon.slice(0, -5));
     let lat = locationData[0].lat.slice(0, -5);
     let lon = locationData[0].lon.slice(0, -5);
 
@@ -471,8 +469,6 @@ async function getLocation(location = "Stockholm") {
       console.log("New location image fetched");
     } else if (location == "Stockholm") {
       locationImage.style.backgroundImage = "url(./images/Stockholm.jpg)";
-    } else {
-      console.log("Saved location image is still set");
     }
   } catch (error) {
     let locationNotFound = "Location not found";
@@ -533,6 +529,7 @@ async function placeWeather(data) {
   let cloudy = "bx bx-cloud";
   let clear = "bx bx-sun";
   let partly = "bx bx-cloud";
+  let drizzle = "bx bx-cloud-drizzle";
   let rain = "bx bx-cloud-rain";
   let snow = "bx bx-cloud-snow";
   let thunder = "bx bx-cloud-lightning";
@@ -574,13 +571,16 @@ async function placeWeather(data) {
         wImage.className = snow;
       }
       if (
-        desc.includes("Drizzle") ||
         desc.includes("Rain") ||
         desc.includes("Showers") ||
         desc.includes("Hail")
       ) {
         weatherAtmo.className = "weather-atmo rain";
         wImage.className = rain;
+      }
+      if (desc.includes("Drizzle")) {
+        weatherAtmo.className = "weather-atmo rain";
+        wImage.className = drizzle;
       }
       if (desc.includes("Thunderstorm")) {
         weatherAtmo.className = "weather-atmo thunderstorm";
@@ -848,11 +848,11 @@ function renderGithub(data) {
     repoDiv.classList.add("repo-div");
     repoDiv.id = `repo-div-${index + 1}`;
 
+    let repoDivBg = document.createElement("div");
+    repoDivBg.classList.add("repo-div-background");
+
     let repoNameDiv = document.createElement("div");
     repoNameDiv.classList.add("repo-name-div");
-
-    let repoIcon = document.createElement("i");
-    repoIcon.className = "fa-solid fa-code-branch fa-xs repo-icon";
 
     let repoName = document.createElement("p");
     repoName.classList.add("repo-name");
@@ -916,8 +916,8 @@ function renderGithub(data) {
 
     repoDiv.appendChild(repoNameDiv);
 
-    repoNameDiv.appendChild(repoIcon);
     repoNameDiv.appendChild(repoName);
+    repoDiv.appendChild(repoDivBg);
     repoDiv.appendChild(statsDiv);
     repoDiv.appendChild(repoLinkButton);
 
